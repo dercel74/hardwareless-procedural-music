@@ -1,0 +1,66 @@
+# Unity
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+/.vs/
+/.idea/
+/.vscode/
+/*.csproj
+/*.sln
+/*.suo
+/*.tmp
+/*.user
+/*.unityproj
+/*.pidb
+/*.booproj
+/*.svd
+/*.pdb
+/*.mdb
+/*.opendb
+/*.VC.db
+
+# Rider
+/.gradle/
+/.fleet/
+
+# Burst
+/hardwareless_BurstDebugInformation_DoNotShip/
+
+# Unity cache
+/Library/
+/Temp/
+/obj/
+/Logs/
+/UserSettings/
+/MemoryCaptures/
+
+# Asset store tools
+/Assets/AssetStoreTools*
+
+# Build artifacts
+/*.apk
+/*.aab
+/*.xcodeproj
+/*.xcworkspace
+/Build/
+/Builds/
+
+# Unity generated lighting data (large and regenerable)
+**/LightingData.asset
+
+# External downloads and archives
+*.zip
+*.7z
+*.rar
+
+# Crash logs
+/*.stacktrace
+
+# OS junk
+Thumbs.db
+.DS_Store

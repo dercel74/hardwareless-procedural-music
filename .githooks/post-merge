@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Forward to Git LFS post-merge to fetch/clean LFS files
+git lfs post-merge "$@"

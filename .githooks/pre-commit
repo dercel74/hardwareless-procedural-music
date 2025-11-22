@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# Prevent committing large non-LFS tracked files (>10 MB)
+
+threshold=$((10 * 1024 * 1024))
+# Allowlist of large text-based Unity assets that are OK without LFS
+allow_exts="unity prefab mat asset anim shader cginc compute json xml txt meta asmdef asmref uxml uss"
+status=0
+
+# get staged files (added/modified)
+git diff --cached --name-only -z | while IFS= read -r -d '' file; do
+  # skip deletions or non-regular files
+  [ -f "$file" ] || continue
+
+  # file size in bytes
+  size=$(wc -c < "$file" 2>/dev/null)
+  [ -n "$size" ] || continue
+
+  if [ "$size" -ge "$threshold" ]; then
+    ext="${file##*.}"
+    for aext in $allow_exts; do
+      if [ "$ext" = "$aext" ]; then
+        continue 2
+      fi
+    done
+    # check if LFS filter applies
+    attr=$(git check-attr filter -- "$file" | awk '{print $3}')
+    if [ "$attr" != "lfs" ]; then
+      echo "Error: $file is ${size} bytes (>10MB) and not tracked by Git LFS." 1>&2
+      echo "Hint: git lfs track '*.<ext>' and re-add the file." 1>&2
+      status=1
+    fi
+  fi
+done
+
+exit $status
