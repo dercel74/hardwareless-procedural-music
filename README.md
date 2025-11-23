@@ -4,9 +4,9 @@
 [![.NET](https://img.shields.io/badge/.NET-9.0.307-purple.svg)](https://dotnet.microsoft.com/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-## 🎵 Advanced Unity Game with Procedural Music System
+## 🎵 Advanced Unity Game with Procedural Music System & Metahuman Character Creation
 
-**Hardwareless** is a cutting-edge Unity 3D game featuring an innovative procedural music system that adapts dynamically to gameplay. The music system includes real-time synthesis, adaptive audio cues, and an enhanced debug HUD with countdown timers and save notifications.
+**Hardwareless** is a cutting-edge Unity 3D game featuring an innovative procedural music system that adapts dynamically to gameplay, plus a comprehensive Metahuman character creation system for creating highly customizable characters. The music system includes real-time synthesis, adaptive audio cues, and an enhanced debug HUD with countdown timers and save notifications.
 
 ## ✨ Key Features
 
@@ -16,6 +16,13 @@
 - **Enhanced HUD** - Countdown display and "Saved" toast notifications
 - **Persistent Settings** - Save/load music configurations
 - **Debug Controls** - F9 key toggles comprehensive debug interface
+
+### 🎭 Metahuman Character Creation
+- **Comprehensive Customization** - Body, face, eyes, nose, mouth, ears, colors
+- **Preset System** - 10 save slots with JSON import/export
+- **Smooth Transitions** - Real-time morphing between character configurations
+- **Debug HUD** - F10 key toggles character creator interface
+- **Audio Integration** - UI sound effects for save/load/randomize actions
 
 ### 🎮 Game Features
 - **Unity 2021.3.22f1** - Latest LTS Unity engine
@@ -50,8 +57,13 @@
 
 4. **Test the Music System:**
    - Press Play in Unity Editor
-   - Press `F9` to open the debug HUD
+   - Press `F9` to open the music debug HUD
    - Explore countdown timers and auto-save features
+
+5. **Test the Character Creator:**
+   - Press `F10` to open the character creation HUD
+   - Use sliders to customize character appearance
+   - Try randomize, presets, and color customization
 
 ## 📚 Documentation
 
@@ -59,6 +71,7 @@
 - **[Unity Installation](UNITY_DIREKTINSTALL.md)** - Step-by-step Unity setup
 - **[Project Status](PROJECT_STATUS.md)** - Overview and quick reference
 - **[Procedural Music](Assets/Documentation/ProceduralMusic.md)** - Complete music system reference
+- **[Metahuman Character Creation](Assets/Documentation/MetahumanCharacterCreation.md)** - Character creator system reference
 - **[Quickstart](QUICKSTART.md)** - Development summary and statistics
 
 ## 🏗️ Project Structure
@@ -67,10 +80,16 @@
 hardwareless/
 ├── Assets/
 │   ├── Scripts/
-│   │   └── Audio/               # Procedural music system
-│   │       ├── ProceduralMusic.cs          (50.1 KB)
-│   │       ├── ProceduralMusicManager.cs   (64.3 KB)
-│   │       └── ProceduralMusicDebugHUD.cs  (30.7 KB)
+│   │   ├── Audio/               # Procedural music system
+│   │   │   ├── ProceduralMusic.cs          (50.1 KB)
+│   │   │   ├── ProceduralMusicManager.cs   (64.3 KB)
+│   │   │   └── ProceduralMusicDebugHUD.cs  (30.7 KB)
+│   │   └── Character/           # Metahuman character creation
+│   │       ├── CharacterData.cs
+│   │       ├── CharacterCustomization.cs
+│   │       ├── CharacterPresetManager.cs
+│   │       ├── MetahumanCharacterCreator.cs
+│   │       └── CharacterCreatorDebugHUD.cs
 │   ├── Documentation/
 │   │   └── ProceduralMusic.md   # Complete system documentation
 │   └── Scenes/                  # Game scenes and levels
@@ -123,6 +142,16 @@ hardwareless/
 4. **Test save functionality** - watch for "Saved" toast notifications
 5. **Experiment with parameters** - adjust music generation settings
 6. **Explore documentation** - `Assets/Documentation/ProceduralMusic.md`
+
+## 🎭 Getting Started with Character Creator
+
+1. **Open Unity and enter Play mode**
+2. **Press F10** to open the character creation debug HUD
+3. **Click "Randomize"** to generate random character appearances
+4. **Navigate tabs** - Body, Face, Colors, Presets
+5. **Adjust sliders** - Real-time character customization
+6. **Save/load presets** - Try the 10 preset slots
+7. **Explore documentation** - `Assets/Documentation/MetahumanCharacterCreation.md`
 
 ## 🤝 Contributing
 
