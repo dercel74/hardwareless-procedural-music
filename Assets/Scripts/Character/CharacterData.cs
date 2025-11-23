@@ -10,6 +10,11 @@ namespace Hardwareless.Character
     [Serializable]
     public class CharacterData
     {
+        // Constants for customization ranges
+        public const int MAX_HAIR_STYLES = 10;
+        public const int MAX_OUTFITS = 10;
+        public const int MAX_ACCESSORIES = 10;
+        
         [Header("Basic Information")]
         public string characterName = "New Character";
         public string characterID = "";
@@ -101,7 +106,7 @@ namespace Hardwareless.Character
             data.earRotation = UnityEngine.Random.Range(0.4f, 0.6f);
             
             // Randomize appearance
-            data.hairStyle = UnityEngine.Random.Range(0, 10);
+            data.hairStyle = UnityEngine.Random.Range(0, MAX_HAIR_STYLES);
             data.hairColor = new Color(
                 UnityEngine.Random.Range(0.1f, 0.9f),
                 UnityEngine.Random.Range(0.1f, 0.5f),

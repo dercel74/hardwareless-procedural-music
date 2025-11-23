@@ -47,6 +47,12 @@ namespace Hardwareless.Character
         private CharacterData _targetCharacter;
         private float _transitionProgress = 1f;
         
+        // Cache material instances to avoid memory leaks
+        private Material _skinMaterialInstance;
+        private Material _hairMaterialInstance;
+        private Material _eyesMaterialInstance;
+        private bool _materialsInitialized = false;
+        
         private void Start()
         {
             if (currentCharacter == null)
@@ -102,6 +108,13 @@ namespace Hardwareless.Character
         {
             if (currentCharacter == null) return;
             
+            // Initialize material instances on first use
+            if (!_materialsInitialized)
+            {
+                InitializeMaterialInstances();
+                _materialsInitialized = true;
+            }
+            
             // Apply body scaling
             if (bodyRoot != null)
             {
@@ -119,33 +132,21 @@ namespace Hardwareless.Character
             }
             
             // Apply skin tone
-            if (skinRenderer != null)
+            if (_skinMaterialInstance != null && _skinMaterialInstance.HasProperty("_Color"))
             {
-                var skinMat = skinRenderer.material;
-                if (skinMat.HasProperty("_Color"))
-                {
-                    skinMat.color = currentCharacter.skinTone;
-                }
+                _skinMaterialInstance.color = currentCharacter.skinTone;
             }
             
             // Apply hair color
-            if (hairRenderer != null)
+            if (_hairMaterialInstance != null && _hairMaterialInstance.HasProperty("_Color"))
             {
-                var hairMat = hairRenderer.material;
-                if (hairMat.HasProperty("_Color"))
-                {
-                    hairMat.color = currentCharacter.hairColor;
-                }
+                _hairMaterialInstance.color = currentCharacter.hairColor;
             }
             
             // Apply eye color
-            if (eyesRenderer != null)
+            if (_eyesMaterialInstance != null && _eyesMaterialInstance.HasProperty("_Color"))
             {
-                var eyesMat = eyesRenderer.material;
-                if (eyesMat.HasProperty("_Color"))
-                {
-                    eyesMat.color = currentCharacter.eyeColor;
-                }
+                _eyesMaterialInstance.color = currentCharacter.eyeColor;
             }
             
             // Apply hair style
@@ -245,6 +246,47 @@ namespace Hardwareless.Character
         public CharacterData GetCharacterData()
         {
             return currentCharacter?.Clone();
+        }
+        
+        /// <summary>
+        /// Initialize material instances to avoid memory leaks from accessing .material property.
+        /// </summary>
+        private void InitializeMaterialInstances()
+        {
+            if (skinRenderer != null && skinRenderer.sharedMaterial != null)
+            {
+                _skinMaterialInstance = new Material(skinRenderer.sharedMaterial);
+                skinRenderer.material = _skinMaterialInstance;
+            }
+            
+            if (hairRenderer != null && hairRenderer.sharedMaterial != null)
+            {
+                _hairMaterialInstance = new Material(hairRenderer.sharedMaterial);
+                hairRenderer.material = _hairMaterialInstance;
+            }
+            
+            if (eyesRenderer != null && eyesRenderer.sharedMaterial != null)
+            {
+                _eyesMaterialInstance = new Material(eyesRenderer.sharedMaterial);
+                eyesRenderer.material = _eyesMaterialInstance;
+            }
+        }
+        
+        private void OnDestroy()
+        {
+            // Clean up material instances
+            if (_skinMaterialInstance != null)
+            {
+                Destroy(_skinMaterialInstance);
+            }
+            if (_hairMaterialInstance != null)
+            {
+                Destroy(_hairMaterialInstance);
+            }
+            if (_eyesMaterialInstance != null)
+            {
+                Destroy(_eyesMaterialInstance);
+            }
         }
     }
 }

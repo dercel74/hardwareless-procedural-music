@@ -9,6 +9,7 @@ namespace Hardwareless.Character
     public static class CharacterPresetManager
     {
         private const string PRESET_KEY_PREFIX = "CharacterPreset_";
+        private const string PRESET_NAME_PREFIX = "CharacterPresetName_";
         private const string LAST_USED_KEY = "Character_LastUsed";
         private const int MAX_PRESET_SLOTS = 10;
         
@@ -30,8 +31,10 @@ namespace Hardwareless.Character
             }
             
             string key = PRESET_KEY_PREFIX + slotIndex;
+            string nameKey = PRESET_NAME_PREFIX + slotIndex;
             string json = data.ToJson();
             PlayerPrefs.SetString(key, json);
+            PlayerPrefs.SetString(nameKey, data.characterName);
             PlayerPrefs.Save();
             
             Debug.Log($"Character preset saved to slot {slotIndex}: {data.characterName}");
@@ -94,9 +97,11 @@ namespace Hardwareless.Character
             }
             
             string key = PRESET_KEY_PREFIX + slotIndex;
+            string nameKey = PRESET_NAME_PREFIX + slotIndex;
             if (PlayerPrefs.HasKey(key))
             {
                 PlayerPrefs.DeleteKey(key);
+                PlayerPrefs.DeleteKey(nameKey);
                 PlayerPrefs.Save();
                 Debug.Log($"Deleted character preset from slot {slotIndex}.");
             }
@@ -110,9 +115,14 @@ namespace Hardwareless.Character
             for (int i = 0; i < MAX_PRESET_SLOTS; i++)
             {
                 string key = PRESET_KEY_PREFIX + i;
+                string nameKey = PRESET_NAME_PREFIX + i;
                 if (PlayerPrefs.HasKey(key))
                 {
                     PlayerPrefs.DeleteKey(key);
+                }
+                if (PlayerPrefs.HasKey(nameKey))
+                {
+                    PlayerPrefs.DeleteKey(nameKey);
                 }
             }
             PlayerPrefs.Save();
@@ -204,6 +214,7 @@ namespace Hardwareless.Character
         
         /// <summary>
         /// Get an array of preset slot information (name and whether slot is occupied).
+        /// Optimized to avoid loading full character data for each slot.
         /// </summary>
         public static PresetSlotInfo[] GetPresetSlots()
         {
@@ -211,21 +222,21 @@ namespace Hardwareless.Character
             
             for (int i = 0; i < MAX_PRESET_SLOTS; i++)
             {
+                bool isOccupied = HasPreset(i);
+                string characterName = "";
+                
+                if (isOccupied)
+                {
+                    string nameKey = PRESET_NAME_PREFIX + i;
+                    characterName = PlayerPrefs.GetString(nameKey, "Unknown");
+                }
+                
                 slots[i] = new PresetSlotInfo
                 {
                     slotIndex = i,
-                    isOccupied = HasPreset(i),
-                    characterName = ""
+                    isOccupied = isOccupied,
+                    characterName = characterName
                 };
-                
-                if (slots[i].isOccupied)
-                {
-                    CharacterData data = LoadPreset(i);
-                    if (data != null)
-                    {
-                        slots[i].characterName = data.characterName;
-                    }
-                }
             }
             
             return slots;

@@ -27,6 +27,11 @@ namespace Hardwareless.Character
         // Cached character data reference for faster access
         private CharacterData _currentData;
         
+        // Confirmation state for dangerous actions
+        private bool _clearPresetsConfirm = false;
+        private float _clearPresetsConfirmTimer = 0f;
+        private const float CONFIRM_TIMEOUT = 3f;
+        
         private void Start()
         {
             _showHUD = showOnStart;
@@ -37,6 +42,16 @@ namespace Hardwareless.Character
             if (Input.GetKeyDown(toggleKey))
             {
                 _showHUD = !_showHUD;
+            }
+            
+            // Handle confirmation timeout
+            if (_clearPresetsConfirm)
+            {
+                _clearPresetsConfirmTimer -= Time.deltaTime;
+                if (_clearPresetsConfirmTimer <= 0f)
+                {
+                    _clearPresetsConfirm = false;
+                }
             }
             
             // Cache current character data
@@ -190,7 +205,7 @@ namespace Hardwareless.Character
             
             GUILayout.BeginHorizontal();
             GUILayout.Label("Hair Style:", GUILayout.Width(120));
-            _currentData.hairStyle = (int)GUILayout.HorizontalSlider(_currentData.hairStyle, 0, 10, GUILayout.Width(200));
+            _currentData.hairStyle = (int)GUILayout.HorizontalSlider(_currentData.hairStyle, 0, CharacterData.MAX_HAIR_STYLES - 1, GUILayout.Width(200));
             GUILayout.Label(_currentData.hairStyle.ToString(), GUILayout.Width(50));
             GUILayout.EndHorizontal();
             
@@ -198,13 +213,13 @@ namespace Hardwareless.Character
             GUILayout.Label("OUTFIT", GUI.skin.box);
             GUILayout.BeginHorizontal();
             GUILayout.Label("Outfit Index:", GUILayout.Width(120));
-            _currentData.outfitIndex = (int)GUILayout.HorizontalSlider(_currentData.outfitIndex, 0, 10, GUILayout.Width(200));
+            _currentData.outfitIndex = (int)GUILayout.HorizontalSlider(_currentData.outfitIndex, 0, CharacterData.MAX_OUTFITS - 1, GUILayout.Width(200));
             GUILayout.Label(_currentData.outfitIndex.ToString(), GUILayout.Width(50));
             GUILayout.EndHorizontal();
             
             GUILayout.BeginHorizontal();
             GUILayout.Label("Accessory Index:", GUILayout.Width(120));
-            _currentData.accessoryIndex = (int)GUILayout.HorizontalSlider(_currentData.accessoryIndex, 0, 10, GUILayout.Width(200));
+            _currentData.accessoryIndex = (int)GUILayout.HorizontalSlider(_currentData.accessoryIndex, 0, CharacterData.MAX_ACCESSORIES - 1, GUILayout.Width(200));
             GUILayout.Label(_currentData.accessoryIndex.ToString(), GUILayout.Width(50));
             GUILayout.EndHorizontal();
             
@@ -270,10 +285,24 @@ namespace Hardwareless.Character
             
             GUILayout.Space(10);
             
-            if (GUILayout.Button("Clear All Presets", GUILayout.Height(30)))
+            string clearButtonText = _clearPresetsConfirm 
+                ? $"Click Again to Confirm ({Mathf.CeilToInt(_clearPresetsConfirmTimer)}s)" 
+                : "Clear All Presets";
+            
+            if (GUILayout.Button(clearButtonText, GUILayout.Height(30)))
             {
-                // Simple confirmation - click twice to confirm
-                CharacterPresetManager.ClearAllPresets();
+                if (_clearPresetsConfirm)
+                {
+                    // Confirmed - clear all presets
+                    CharacterPresetManager.ClearAllPresets();
+                    _clearPresetsConfirm = false;
+                }
+                else
+                {
+                    // First click - require confirmation
+                    _clearPresetsConfirm = true;
+                    _clearPresetsConfirmTimer = CONFIRM_TIMEOUT;
+                }
             }
         }
         
